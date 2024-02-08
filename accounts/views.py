@@ -85,3 +85,12 @@ def logoutView(request):
 @login_required(login_url='/accounts/login')
 def workView(request):
     return render(request,'delete.html')
+
+@login_required(login_url='/accounts/login')
+def userProfileView(request):
+    return render(request,'profile_info.html')
+    
+@login_required(login_url='/accounts/login')
+def editProfileView(request):
+    return render(request,'profile_edit.html')
+    
