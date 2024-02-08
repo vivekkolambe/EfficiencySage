@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Login Page{% endblock title %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="{% static "accounts/css/login.css" %}">
+{% endblock css %}
+{% block content %}
+<div class="container">
+    <div class="left-section"></div>
+    <div class="right-section">
+        <div class="login-container">
+            <form class="login-form" method="post" action="{% url "login-page" %}">
+                {% csrf_token %}
+                <div id="alert" {% if not messages %} class="hidden"{% endif %} style="color: red;transition: opacity 1s ease-in-out;text-align: center;margin: 50px;">
+                    {% if messages %} 
+                    {% for message in messages %}
+                    {{ message }}
+                    {% endfor %}
+                    {% endif %}
+                    </div>
+                <h2 class="login-title">LOGIN</h2>
+                <div class="form-control">
+                    <i class="fas fa-user icon"></i>
+                    <input type="text" placeholder="Username" id="username" name='username' required>
+                </div>
+                <div class="form-control">
+                    <i class="fas fa-lock icon"></i>
+                    <input type="password" placeholder="Password" id="password" name='password' required>
+                </div>                    
+                <button type="submit">Login</button>
+                <p id="token">New user? <a href="{% url "register-page" %}">register</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+

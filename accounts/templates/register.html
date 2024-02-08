@@ -1,0 +1,59 @@
+{% extends "base.html" %} {% comment %} Extend the base HTML file {% endcomment %}
+
+{% block title %}Register Page{% endblock title %}  {# Giving title to oage #}
+
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static "accounts/css/login.css" %}">
+{% endblock css %}
+
+
+{% block content %}
+<div class="container">
+    <div class="left-section"></div>
+    <div class="right-section">
+        <div class="login-container">
+            <form class="login-form" method="post" action="{% url "register-page" %}">
+                {% csrf_token %}
+                <div id="alert" {% if not messages %} class="hidden"{% endif %} style="color: red;transition: opacity 1s ease-in-out;text-align: center; margin: 50px;">
+                {% if messages %} 
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+                {% endif %}
+                </div>
+                <h2 class="login-title">REGISTER</h2>
+                <div class="form-control">
+                    <i class="fas fa-user icon"></i>
+                    <input type="text" placeholder="Username" id="username"  name="username"required>
+                </div>
+                <div class="form-control">
+                    <i class="fas fa-envelope icon"></i>
+                    <input type="email" placeholder="Email" id="email"  name="email" required>
+                </div>
+                <div class="form-control">
+                    <i class="fas fa-lock icon"></i>
+                    <input type="password" placeholder="Password" id="password" name="password" required>
+                </div>                    
+                <div class="form-control">
+                    <i class="fas fa-lock icon"></i>
+                    <input type="password" placeholder="Confirm Password" id="confirm-password" name="confirm-password" required>
+                </div>     
+                <div class="form-control">
+                    <label>
+                        <input type="radio" name="user_type" value="manager"> Manager
+                    </label>
+                    
+                    <label>
+                        <input type="radio" name="user_type" value="employee"> Employee
+                    </label>
+                </div>               
+                <button type="submit">Register</button>
+                <p class="token">Have a account? <a href="{% url "login-page" %}">login</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
