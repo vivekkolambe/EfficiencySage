@@ -18,4 +18,4 @@ def home(request):
             'labels': ['Completed', 'In Progress', 'Pending'],
             'values': [30, 50, 20]
         }
-        return render(request, 'home.html', {'pie_data': pie_data})
+        return render(request, 'emp_home.html', {'pie_data': pie_data})

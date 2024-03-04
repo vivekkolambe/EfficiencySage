@@ -17,7 +17,7 @@ def home(request):
             'labels': ['Completed', 'In Progress', 'Pending'],
             'values': [30, 50, 20]
         }
-        return render(request, 'home.html', {'pie_data': pie_data})
+        return render(request, 'man_home.html', {'pie_data': pie_data})
     else:
         # Logic to retrieve data for non-manager's home page
         # You can define this logic according to your application requirements
