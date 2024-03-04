@@ -48,33 +48,39 @@ def RegisterView(request):
             login(request,user)
             messages.success(request, 'Registration successful. You are now logged in.')
             return redirect('form-page')
-            
-
-
-
     return render(request,'register.html')
+
 @login_required(login_url='/accounts/login')
 def formView(request):
     user = request.user
+
     if request.method == 'POST':
+        # Extract form data
         first_name = request.POST.get('first-name')
         last_name = request.POST.get('last-name')
         phone = request.POST.get('phone-number')
         experience = request.POST.get('experience')
-        request.user.first_name = first_name
-        request.user.last_name = last_name
-        request.user.phone = phone
-        request.user.experience = experience
+
+        # Update user object fields
+        user.first_name = first_name
+        user.last_name = last_name
+        user.phone = phone
+        user.experience = experience
+
+        # Save changes to the database
+        user.save()
+
+        # Redirect to 'working' view
         return redirect('working')
 
-        
     context = {
-        'username':user.username,
-        'email' : user.email,
-        'role' : 'Manager' if user.is_manager else 'Employee',
-        
+        'username': user.username,
+        'email': user.email,
+        'role': 'Manager' if user.is_manager else 'Employee',
     }
-    return render(request,'form.html',context)
+
+    return render(request, 'form.html', context)
+
 @login_required(login_url='/accounts/login')
 def logoutView(request):
     logout(request)

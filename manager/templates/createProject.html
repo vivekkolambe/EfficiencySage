@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manager Home Page</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Custom styles */
+    /* Add your custom CSS here */
+  </style>
+</head>
+<body>
+  <!-- Header bar -->
+  <header class="bg-primary text-white py-2">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3>Manager Home</h3>
+        <a href="#" class="text-white">Profile</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Body content -->
+  <div class="container mt-4">
+    <form method="post" enctype="multipart/form-data" action="{% url 'create_project' %}">
+      {% csrf_token %}
+      <div class="form-group">
+          <label for="projectName">Project Name:</label>
+          <input type="text" class="form-control" id="projectName" name="project_name" value="{{ form_data.project_name|default:'' }}" required>
+          {% if error_message %}
+              <small class="text-danger">{{ error_message }}</small>
+          {% endif %}
+      </div>
+  
+      <div class="form-group">
+          <label for="projectDescription">Project Description:</label>
+          <textarea class="form-control" id="projectDescription" name="project_description" rows="4" required>{{ form_data.project_description|default:'' }}</textarea>
+      </div>
+  
+      <div class="form-group">
+          <label for="projectDocument">Upload Document (optional):</label>
+          <input type="file" class="form-control-file" id="projectDocument" name="project_document">
+      </div>
+  
+      <button type="submit" class="btn btn-success">Create Project</button>
+  </form>
+  </div>
+  <!-- End of Body content -->
+
+  <!-- Bootstrap JS (Optional) - for Bootstrap components that require JavaScript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
