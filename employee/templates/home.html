@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Home Page</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Custom styles */
+    /* Add your custom CSS here */
+  </style>
+</head>
+<body>
+  <!-- Header bar -->
+  <header class="bg-primary text-white py-2">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3>Manager Home</h3>
+        <a href="#" class="text-white">Profile</a>
+      </div>
+    </div>
+  </header>
+
+<!-- Body content -->
+<div class="container mt-4">
+  <div class="row">
+    <!-- Left section - Create Project Button -->
+    <div class="col-md-3">
+      <a href="{% url 'create_project' %}" class="btn btn-success btn-block">Tasks</a>
+  </div>
+    <!-- Middle section - Dashboard -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Dashboard</h5>
+          <!-- Pie Chart Canvas -->
+          <canvas id="myPieChart" width="400" height="400"></canvas>
+        </div>
+      </div>
+    </div>
+    <!-- Right section - Employees List and Assign Task Button -->
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Tasks</h5>
+          <!-- Employee List -->
+          <ul class="list-group">
+            <li class="list-group-item">Task 1</li>
+            <li class="list-group-item">Task 2</li>
+            <li class="list-group-item">Task 3</li>
+            <!-- Add more employees here -->
+          </ul>
+          <!-- Assign Task Button -->
+          <button class="btn btn-primary mt-2 btn-block">Assign Task</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End of Body content -->
+
+
+  <!-- Bootstrap JS (Optional) - for Bootstrap components that require JavaScript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    // Sample data for the pie chart
+    var pieChartData = {
+      labels: ['Completed', 'In Progress', 'Pending'],
+      datasets: [{
+        data: [30, 50, 20], // Sample data values
+        backgroundColor: ['#28a745', '#ffc107', '#dc3545'] // Colors for the sections
+      }]
+    };
+  
+    // Get the canvas element
+    var ctx = document.getElementById('myPieChart').getContext('2d');
+  
+    // Create the pie chart
+    var myPieChart = new Chart(ctx, {
+      type: 'pie',
+      data: pieChartData
+    });
+  </script>
+  
+</body>
+</html>

@@ -21,7 +21,7 @@ def home(request):
     else:
         # Logic to retrieve data for non-manager's home page
         # You can define this logic according to your application requirements
-        return render(request, 'non_manager_home.html')
+        return redirect('login-page')
 
 
 

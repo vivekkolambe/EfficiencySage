@@ -18,7 +18,7 @@ def LoginView(request):
             if user.is_manager:
                 return redirect('manager-home')  # Redirect to manager home page
             else:
-                return redirect('form-page')  # Redirect to the form page
+                return redirect('employee-home')  # Redirect to the employee home page
         else:
             messages.error(request, 'Invalid username or password')
             return redirect('login-page')
