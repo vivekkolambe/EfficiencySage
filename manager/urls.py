@@ -6,4 +6,5 @@ from . import views
 urlpatterns = [
     path('', views.home, name='manager-home'),
     path('create_project/', views.create_project_view, name='create_project'),
+    path('create_task/', views.createAndAssignTask, name='create_task'),
 ]
