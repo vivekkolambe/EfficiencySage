@@ -17,7 +17,11 @@ def home(request):
             'labels': ['Completed', 'In Progress', 'Pending'],
             'values': [30, 50, 20]
         }
-        return render(request, 'man_home.html', {'pie_data': pie_data})
+
+        # projects = Project.objects.all()
+        projects = Project.objects.filter(manager_id=request.user)
+
+        return render(request, 'man_home.html', {'pie_data': pie_data, 'projects': projects})
     else:
         # Logic to retrieve data for non-manager's home page
         # You can define this logic according to your application requirements
@@ -51,3 +55,4 @@ def create_project_view(request):
             error_message = 'Project with this name already exists. Please choose a different name.'
 
     return render(request, 'createProject.html', {'error_message': error_message, 'form_data': form_data})
+

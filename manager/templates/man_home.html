@@ -1,34 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  {% load static %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manager Home Page</title>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- <link rel="stylesheet" href="{% static "manager/css/style.css" %}"> -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     /* Custom styles */
     /* Add your custom CSS here */
+    
   </style>
 </head>
 <body>
-  <!-- Header bar -->
-  <header class="bg-primary text-white py-2">
-    <div class="container">
-      <div class="d-flex justify-content-between align-items-center">
-        <h3>Manager Home</h3>
-        <a href="#" class="text-white">Profile</a>
+ <!-- Header bar -->
+<header class="bg-primary text-white py-2">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+      <h3>Manager Home</h3>
+      <div class="hamburger-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="user-profile">
+        
+        <div class="dropdown">
+          <a class="text-white dropdown-toggle" href="#" role="button" id="profileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="{% static "manager/user-icon.png" %}" alt="User Icon" style="width: 20px; height: 20px; border-radius: 50%;">
+          </a>
+          <div class="dropdown-menu" aria-labelledby="profileDropdown">
+            <a class="dropdown-item" href="#">Profile</a>
+            <a class="dropdown-item" href="logout-user">Logout</a>
+          </div>
+        </div>
       </div>
     </div>
-  </header>
+  </div>
+</header>
+
 
 <!-- Body content -->
 <div class="container mt-4">
   <div class="row">
-    <!-- Left section - Create Project Button -->
+    <!-- Left section - Create Project Button and Project List -->
     <div class="col-md-3">
       <a href="{% url 'create_project' %}" class="btn btn-success btn-block">Create Project</a>
+
+      <!-- Projects List -->
+      <h5 class="mt-3">Projects List:</h5>
+      <ul class="list-group">
+          {% for project in projects %}
+              <li class="list-group-item">{{ project.name }}</li>
+          {% endfor %}
+      </ul>
   </div>
     <!-- Middle section - Dashboard -->
     <div class="col-md-6">
