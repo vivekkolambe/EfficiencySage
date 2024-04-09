@@ -7,6 +7,10 @@ from django.contrib import messages
 from manager.models import *
 from django.db import IntegrityError
 from accounts.models import CustomUser
+from django.shortcuts import get_object_or_404
+from .models import Project
+
+
 @login_required(login_url='/accounts/login')
 def home(request):
     User = get_user_model()
@@ -40,13 +44,23 @@ def create_project_view(request):
         form_data['project_document'] = request.FILES.get('project_document')
 
         try:
+            # Get the current user (manager)
+            manager = request.user
+
+            # Create the project
             new_project = Project(
                 name=form_data['project_name'],
                 description=form_data['project_description'],
-                manager_id=request.user,
+                manager_id=manager.id,  # Assign the manager's ID, not the object itself
                 document=form_data['project_document']
             )
             new_project.save()
+
+             #update user project allocation status to True and project id assigned to manager
+            request.user.is_allocated=True;
+            request.user.project_id=new_project.id;
+            request.user.save()
+
 
             messages.success(request, 'Project created successfully.')
             return redirect('manager-home')
