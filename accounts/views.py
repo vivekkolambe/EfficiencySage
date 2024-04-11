@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render,HttpResponse,redirect
 from django.contrib import messages
 from django.contrib.auth import login,authenticate,logout
@@ -60,13 +61,16 @@ def formView(request):
         last_name = request.POST.get('last-name')
         phone = request.POST.get('phone-number')
         experience = request.POST.get('experience')
-
+        skill_input = request.POST.get('skill_input')
+        skill_list = skill_input.split(',')
+        skill_json = json.dumps(skill_list)
+        
         # Update user object fields
         user.first_name = first_name
         user.last_name = last_name
         user.phone = phone
         user.experience = experience
-
+        user.skills = skill_json
         # Save changes to the database
         user.save()
 

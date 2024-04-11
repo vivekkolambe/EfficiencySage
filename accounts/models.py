@@ -6,6 +6,7 @@ class CustomUser(AbstractUser):
     experience = models.DecimalField(max_digits=19, decimal_places=2, blank=True, null=True)
     is_manager = models.BooleanField()
     is_allocated=models.BooleanField(default=False)
+    skills = models.JSONField(default=dict)
     project = models.ForeignKey('manager.Project', on_delete=models.SET_NULL, null=True, blank=True)
 
 # oldd
