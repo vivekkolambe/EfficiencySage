@@ -33,7 +33,7 @@
             <img src="{% static "manager/user-icon.png" %}" alt="User Icon" style="width: 20px; height: 20px; border-radius: 50%;">
           </a>
           <div class="dropdown-menu" aria-labelledby="profileDropdown">
-            <a class="dropdown-item" href="#">Profile</a>
+            <a class="dropdown-item" href="{% url "profile-page" %}">Profile</a>
             <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
           </div>
         </div>

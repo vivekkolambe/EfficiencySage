@@ -6,5 +6,7 @@ urlpatterns = [
    path('form',formView ,name='form-page'),
    path('logout-user',logoutView,name='logout'),
    path('working',workView,name='working'),
+   path('profile',profileView,name='profile-page'),
+   path('edit-profile',editProfileView,name='edit-profile')
 
 ]

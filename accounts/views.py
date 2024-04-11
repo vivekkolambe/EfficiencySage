@@ -95,3 +95,35 @@ def logoutView(request):
 @login_required(login_url='/accounts/login')
 def workView(request):
     return render(request,'delete.html')
+
+@login_required(login_url='/accounts/login')
+def profileView(request):
+    profile_user  = request.user
+    return render(request,'profile_demo.html')
+
+def editProfileView(request):
+    return render(request,'edit_profile.html')
+
+def editProfileView(request):
+    user = request.user
+    if request.method == 'POST':
+        # Process form submission
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        experience = request.POST.get('experience')
+        skills = request.POST.get('skills')
+
+        # Update user object with new data
+        user.username = username
+        user.email = email
+        user.phone = phone
+        user.experience = experience
+        user.skills = skills
+
+        # Save user object
+        user.save()
+        return redirect('profile-page')
+    else:
+        # Render edit user form
+        return render(request, 'edit_profile.html', {'user': user})
