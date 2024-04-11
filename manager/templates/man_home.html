@@ -35,8 +35,6 @@
           <div class="dropdown-menu" aria-labelledby="profileDropdown">
             <a class="dropdown-item" href="#">Profile</a>
             <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-
-
           </div>
         </div>
       </div>
@@ -50,21 +48,29 @@
   <div class="row">
     <!-- Left section - Create Project Button and Project List -->
     <div class="col-md-3">
-      {% if not request.user.is_allocated %}
-    <a href="{% url 'create_project' %}" class="btn btn-success btn-block">Create Project</a>
-{% else %}
-    <!-- Disable the link and change its appearance to indicate that it's disabled -->
-    <a href="#" class="btn btn-success btn-block disabled" role="button" aria-disabled="true">Project Allocated</a>
-{% endif %}
+        {% if not request.user.is_allocated %}
+              <a href="{% url 'create_project' %}" class="btn btn-success btn-block">Create Project</a>
+        {% else %}
+            <!-- Disable the link and change its appearance to indicate that it's disabled -->
+            <a href="#" class="btn btn-success btn-block disabled" role="button" aria-disabled="true">Project Allocated</a>
+        {% endif %}
 
 
-      <!-- Projects List -->
-      <h5 class="mt-3">Projects List:</h5>
-      <ul class="list-group">
-          {% for project in projects %}
-              <li class="list-group-item">{{ project.name }}</li>
-          {% endfor %}
-      </ul>
+        <!-- Projects List -->
+        <h5 class="mt-3">Project :</h5>
+        <ul class="list-group">
+            {% for project in request.user.projects_created.all %}
+                <li class="list-group-item">{{ project.name }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Assign employees -->
+        {% if request.user.projects_created.all %}
+            <a href="{% url 'assign_employees' %}" class="btn btn-success btn-block">Assign Employees</a>
+        {% else %}
+            <!-- Disable the link and change its appearance to indicate that it's disabled -->
+            <a href="#" class="btn btn-success btn-block disabled" role="button" aria-disabled="true">Assign Employees</a>
+        {% endif %}
   </div>
     <!-- Middle section - Dashboard -->
     <div class="col-md-6">
@@ -83,13 +89,19 @@
           <h5 class="card-title">Employees</h5>
           <!-- Employee List -->
           <ul class="list-group">
-            <li class="list-group-item">Employee 1</li>
-            <li class="list-group-item">Employee 2</li>
-            <li class="list-group-item">Employee 3</li>
-            <!-- Add more employees here -->
+            {% for employee in assigned_employees %}
+              <li class="list-group-item">{{ employee.username }}</li>
+            {% empty %}
+              <li class="list-group-item">No employees assigned to this project.</li>
+            {% endfor %}
           </ul>
           <!-- Assign Task Button -->
-          <a href="{% url "create_task" %}" class="btn btn-primary mt-2 btn-block">Assign Task</a>
+          {% if request.user.projects_created.all %}
+              <a href="{% url "create_task" %}" class="btn btn-primary mt-2 btn-block">Assign Task</a>
+          {% else %}
+              <!-- Disable the link and change its appearance to indicate that it's disabled -->
+              <a href="#" class="btn btn-primary mt-2 btn-block disabled" role="button" aria-disabled="true">Assign Task</a>
+          {% endif %}
         </div>
       </div>
     </div>

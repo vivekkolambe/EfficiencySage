@@ -22,10 +22,13 @@ def home(request):
             'values': [30, 50, 20]
         }
 
-        # projects = Project.objects.all()
-        projects = Project.objects.filter(manager_id=request.user)
+        # Retrieve projects managed by the current user
+        projects = Project.objects.filter(manager=request.user)
 
-        return render(request, 'man_home.html', {'pie_data': pie_data, 'projects': projects})
+        # Retrieve employees assigned to the projects managed by the current user
+        assigned_employees = User.objects.filter(project__in=projects, is_manager=False)
+
+        return render(request, 'man_home.html', {'pie_data': pie_data, 'projects': projects, 'assigned_employees': assigned_employees})
     else:
         # Logic to retrieve data for non-manager's home page
         # You can define this logic according to your application requirements
@@ -74,8 +77,14 @@ def createAndAssignTask(request):
     error_message = None
     form_data = {}  # Store form data to repopulate the fields on erro
     managers = CustomUser.objects.filter(is_manager=True)
-    employees = CustomUser.objects.filter(is_manager=False)
-    projects = Project.objects.filter(project_status='In Progress')
+    employees = CustomUser.objects.filter(is_manager=False, project=request.user.project)
+    assigned_project = request.user.project
+
+    # Check if the logged-in user has an assigned project
+    if assigned_project:
+        projects = Project.objects.filter(project_status='In Progress', id=assigned_project.id)
+    else:
+        projects = None  # No assigned project for the logged-in user
     if request.method == 'POST':
         form_data['task_name'] = request.POST.get('task_name')
         form_data['task_desc'] = request.POST.get('task_desc')
@@ -111,4 +120,27 @@ def createAndAssignTask(request):
             return render(request, 'createandAssignTask.html', {'employees': employees, 'managers': managers, 'projects': projects,'error_message':error_message})
     return render(request, 'createandAssignTask.html', {'employees': employees, 'managers': managers, 'projects': projects})
 
-    
+
+def assign_employee(request):
+    # Query all free employees who are not managers
+    free_employees = CustomUser.objects.filter(is_manager=False, is_allocated=False)
+
+    # Render the template with the list of free employees
+    return render(request, 'assignEmployee.html', {'free_employees': free_employees})
+
+def update_employees(request):
+    if request.method == 'POST':
+        selected_employee_ids = request.POST.getlist('selected_employees')
+        project = request.user.project  # Assuming project is a ForeignKey field on the user model
+
+        # Update selected employees
+        CustomUser.objects.filter(id__in=selected_employee_ids).update(
+            is_allocated=True,
+            project=project
+        )
+
+        # Redirect back to man_home.html
+        return redirect('manager-home')
+    else:
+        # Handle GET request if needed
+        pass
