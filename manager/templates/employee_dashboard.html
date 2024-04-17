@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles */
+        .dashboard-heading {
+            margin-top: 40px; /* Adjust the top margin */
+            margin-bottom: 20px; /* Adjust the bottom margin */
+            text-align: center; /* Center align the text */
+            color: #333; /* Set the text color */
+            font-size: 28px; /* Set the font size */
+            font-weight: bold; /* Set the font weight */
+        }
+        .card {
+            max-width: 400px; /* Adjust maximum width of cards */
+        }
+        .card-body {
+            padding: 1rem; /* Adjust padding within cards */
+        }
+        .scrollable-container {
+            max-height: 600px; /* Adjust maximum height of scrollable container */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-auto">
+            <a href="{% url "manager-home" %}" class="btn btn-info">&larr; Back</a>
+        </div>
+        <div class="col text-center">
+            <h2 class="dashboard-heading">Employee Dashboard</h2>
+        </div>
+    </div>
+        
+            {% if employees_tasks %}
+                <div class="row">
+                    {% for employee, tasks_json in employees_tasks.items %}
+                    <div class="card mb-3 col-md-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Tasks assigned to {{ employee }}</h5>
+                            <canvas id="{{ employee }}PieChart" width="400" height="400"></canvas>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    var ctx = document.getElementById('{{ employee }}PieChart').getContext('2d');
+                                    var tasksData = JSON.parse('{{ tasks_json|safe }}');
+                                    // Extract data for the chart
+                        var completedCount = tasksData.filter(task => task.task_status === 'Completed').length;
+                        var inProgressCount = tasksData.filter(task => task.task_status === 'In Progress').length;
+                        var pendingCount = tasksData.filter(task => task.task_status === 'Pending').length;
+                        
+                        // Prepare data for the chart
+                        var pieChartData = {
+                            labels: ['Completed', 'In Progress', 'Pending'],
+                            datasets: [{
+                                data: [completedCount, inProgressCount, pendingCount],
+                                backgroundColor: ['#28a745', '#ffc107', '#dc3545']
+                            }]
+                        };
+                        
+                        // Create the pie chart
+                        var myPieChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: pieChartData,
+                            options: {
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom', // Adjust legend position
+                                    }
+                                }
+                            }
+                        });
+                                });
+                            </script>
+                        </div>
+                    </div>
+                    {% endfor %}
+            </div>
+        {% else %}
+            <!-- Display a message if there are no employees -->
+            <p class="text-center">Currently no employee present or assigned task.</p>
+        {% endif %}
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+
+</body>
+</html>

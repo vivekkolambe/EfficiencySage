@@ -76,7 +76,10 @@
     <div class="col-md-6">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Dashboard</h5>
+          <div class="row">
+          <h5 class="card-title col-md-6">Overall Task Dashboard</h5>
+          <a class="btn btn-outline-info col-md-6" href="{% url "employee_dashboard" %}">Detailed View</a>
+        </div>
           <!-- Pie Chart Canvas -->
           <canvas id="myPieChart" width="400" height="400"></canvas>
         </div>
@@ -90,7 +93,9 @@
           <!-- Employee List -->
           <ul class="list-group">
             {% for employee in assigned_employees %}
-              <li class="list-group-item">{{ employee.username }}</li>
+              <li class="list-group-item">
+                  <a class="btn btn-outline-info btn-block" href="{% url 'employee_tasks' employee.id %}">{{ employee.username }}</a>
+              </li>
             {% empty %}
               <li class="list-group-item">No employees assigned to this project.</li>
             {% endfor %}
@@ -115,24 +120,48 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
-    // Sample data for the pie chart
-    var pieChartData = {
-      labels: ['Completed', 'In Progress', 'Pending'],
-      datasets: [{
-        data: [30, 50, 20], // Sample data values
-        backgroundColor: ['#28a745', '#ffc107', '#dc3545'] // Colors for the sections
-      }]
-    };
-  
     // Get the canvas element
     var ctx = document.getElementById('myPieChart').getContext('2d');
   
-    // Create the pie chart
-    var myPieChart = new Chart(ctx, {
-      type: 'pie',
-      data: pieChartData
-    });
-  </script>
+    // Parse the tasks data passed from Django
+    var tasksData = JSON.parse('{{ tasks|safe }}');
+  
+    // Check if tasksData is an array
+    if (Array.isArray(tasksData)) {
+        // Extract data for the chart
+        var completedCount = tasksData.filter(task => task.task_status === 'Completed').length;
+        var inProgressCount = tasksData.filter(task => task.task_status === 'In Progress').length;
+        var pendingCount = tasksData.filter(task => task.task_status === 'Pending').length;
+      
+        // Prepare data for the chart
+        var pieChartData = {
+            labels: ['Completed', 'In Progress', 'Pending'],
+            datasets: [{
+                data: [completedCount, inProgressCount, pendingCount],
+                backgroundColor: ['#28a745', '#ffc107', '#dc3545']
+            }]
+        };
+      
+        // Create the pie chart
+        var myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: pieChartData,
+            options: {
+                plugins: {
+                    legend: {
+                        position: 'bottom', // Adjust legend position
+                    }
+                }
+            }
+        });
+    } else {
+        console.error('Tasks data is not in the expected format.');
+    }
+</script>
+
+
+</body>
+</html>
   
 </body>
 </html>

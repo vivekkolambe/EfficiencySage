@@ -13,12 +13,29 @@
   </style>
 </head>
 <body>
+  {% load static %}
   <!-- Header bar -->
   <header class="bg-primary text-white py-2">
     <div class="container">
       <div class="d-flex justify-content-between align-items-center">
-        <h3>Employee Home</h3>
-        <a href="{% url "profile" %}" class="text-white">Profile</a>
+        <h3>{{user.first_name}} {{user.last_name}}</h3>
+        <div class="hamburger-menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="user-profile">
+          
+          <div class="dropdown">
+            <a class="text-white dropdown-toggle" href="#" role="button" id="profileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <img src="{% static "manager/user-icon.png" %}" alt="User Icon" style="width: 20px; height: 20px; border-radius: 50%;">
+            </a>
+            <div class="dropdown-menu" aria-labelledby="profileDropdown">
+              <a class="dropdown-item" href="{% url "profile-page" %}">Profile</a>
+              <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -28,7 +45,7 @@
   <div class="row">
     <!-- Left section - Create Project Button -->
     <div class="col-md-3">
-      <a href="{% url 'create_project' %}" class="btn btn-success btn-block">Tasks</a>
+      <a href="{% url 'create_project' %}" class="btn btn-success btn-block">Button</a>
   </div>
     <!-- Middle section - Dashboard -->
     <div class="col-md-6">
@@ -43,18 +60,39 @@
     <!-- Right section - Employees List and Assign Task Button -->
     <div class="col-md-3">
       <div class="card">
+        <!-- For Pending Tasks -->
         <div class="card-body">
-          <h5 class="card-title">Tasks</h5>
-          <!-- Employee List -->
-          <ul class="list-group">
-            <li class="list-group-item">Task 1</li>
-            <li class="list-group-item">Task 2</li>
-            <li class="list-group-item">Task 3</li>
-            <!-- Add more employees here -->
-          </ul>
-          <!-- Assign Task Button -->
-          <button class="btn btn-primary mt-2 btn-block">Assign Task</button>
+            <h5 class="card-title">Pending Tasks</h5>
+            <!-- Task List -->
+            <ul class="list-group">
+                {% for task in pending_tasks %}
+                <li class="list-group-item"><a href="{% url 'task_detail' task.id %}" class="btn btn-outline-info btn-block">{{ task.task_name }}</a></li>
+                {% endfor %}
+            </ul>
         </div>
+
+        <!-- For In Progress Tasks -->
+        <div class="card-body">
+            <h5 class="card-title">In Progress Tasks</h5>
+            <!-- Task List -->
+            <ul class="list-group">
+                {% for task in in_progress_tasks %}
+                    <li class="list-group-item"><a href="{% url 'task_detail' task.id %}" class="btn btn-outline-info btn-block">{{ task.task_name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- For Completed Tasks -->
+        <div class="card-body">
+            <h5 class="card-title">Completed Tasks</h5>
+            <!-- Task List -->
+            <ul class="list-group">
+                {% for task in completed_tasks %}
+                <li class="list-group-item"><a href="{% url 'task_detail' task.id %}" class="btn btn-outline-info btn-block">{{ task.task_name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
       </div>
     </div>
   </div>
@@ -67,24 +105,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
-    // Sample data for the pie chart
-    var pieChartData = {
-      labels: ['Completed', 'In Progress', 'Pending'],
-      datasets: [{
-        data: [30, 50, 20], // Sample data values
-        backgroundColor: ['#28a745', '#ffc107', '#dc3545'] // Colors for the sections
-      }]
-    };
-  
     // Get the canvas element
     var ctx = document.getElementById('myPieChart').getContext('2d');
+  
+    // Parse the JSON data passed from Django
+    var pieChartData = JSON.parse('{{ pie_chart_data|escapejs }}');
   
     // Create the pie chart
     var myPieChart = new Chart(ctx, {
       type: 'pie',
       data: pieChartData
     });
-  </script>
+</script>
   
 </body>
 </html>

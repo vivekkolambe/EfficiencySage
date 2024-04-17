@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manager Home Page</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- <link rel="stylesheet" href="{% static "manager/css/style.css" %}"> -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Custom styles */
+    /* Add your custom CSS here */
+  </style>
+</head>
+<body>
+ <!-- Header bar -->
+<header class="bg-primary text-white py-2">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+      <h3>Manager Home</h3>
+      <div class="hamburger-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="user-profile">        
+        <div class="dropdown">
+          <a class="text-white dropdown-toggle" href="#" role="button" id="profileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="{% static "manager/user-icon.png" %}" alt="User Icon" style="width: 20px; height: 20px; border-radius: 50%;">
+          </a>
+          <div class="dropdown-menu" aria-labelledby="profileDropdown">
+            <a class="dropdown-item" href="#">Profile</a>
+            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Body content -->
+<div class="container mt-4">
+  <h4>List of Free Employees (Not Managers)</h4>
+  <form method="POST" action="{% url 'update_employees' %}">
+    {% csrf_token %}
+    <ul class="list-group">
+      {% for employee in free_employees %}
+        <li class="list-group-item">
+          <input type="checkbox" name="selected_employees" value="{{ employee.id }}"> {{ employee.username }}
+        </li>
+      {% empty %}
+        <li class="list-group-item">No free employees available.</li>
+      {% endfor %}
+    </ul>
+    <button type="submit" class="btn btn-primary mt-3">Assign Selected Employees</button>
+  </form>
+</div>
+<!-- End of Body content -->
+
+<!-- scripts -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

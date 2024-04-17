@@ -1,5 +1,6 @@
 # manager/views.py
 
+import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
@@ -15,20 +16,16 @@ from .models import Project
 def home(request):
     User = get_user_model()
     is_manager = request.user.is_manager
+    
+    # Get tasks associated with these projects
     if is_manager:
-        # Logic to retrieve data for the manager's home page
-        pie_data = {
-            'labels': ['Completed', 'In Progress', 'Pending'],
-            'values': [30, 50, 20]
-        }
-
-        # Retrieve projects managed by the current user
         projects = Project.objects.filter(manager=request.user)
-
+        tasks = Task.objects.filter(project__in=projects)
+        tasks_json = json.dumps(list(tasks.values()))
         # Retrieve employees assigned to the projects managed by the current user
         assigned_employees = User.objects.filter(project__in=projects, is_manager=False)
 
-        return render(request, 'man_home.html', {'pie_data': pie_data, 'projects': projects, 'assigned_employees': assigned_employees})
+        return render(request, 'man_home.html', {'tasks': tasks_json, 'projects': projects, 'assigned_employees': assigned_employees})
     else:
         # Logic to retrieve data for non-manager's home page
         # You can define this logic according to your application requirements
@@ -144,3 +141,31 @@ def update_employees(request):
     else:
         # Handle GET request if needed
         pass
+
+def employee_tasks(request, employee_id):
+    # Retrieve tasks assigned to the clicked employee
+    tasks = Task.objects.filter(employee_id=employee_id)
+    employee = get_object_or_404(CustomUser, id=employee_id)
+    # Pass tasks and employee context to the template
+    return render(request, 'employee_tasks.html', {'tasks': tasks, 'employee': employee})
+
+def employee_dashboard(request):
+    # Get employees under the current manager (request.user)
+    employees = CustomUser.objects.filter(assigned_tasks__manager=request.user)
+    
+    # Create a dictionary to hold tasks data for each employee
+    employees_tasks = {}
+    
+    # Iterate over each employee
+    for employee in employees:
+        # Get tasks data for the current employee
+        tasks = Task.objects.filter(employee=employee)
+        
+        # Convert tasks data to JSON format
+        tasks_json = json.dumps(list(tasks.values()))
+        
+        # Add tasks data to the dictionary
+        employees_tasks[employee.username] = tasks_json
+    
+    # Pass employees_tasks dictionary as context to the template
+    return render(request, 'employee_dashboard.html', {'employees_tasks': employees_tasks})
